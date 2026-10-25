@@ -75,7 +75,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { PLAN, BANKS, bankForPhase, bankForKp, findKp } from '../data/index.js'
-import { record, toggleStar, isStarred, inWrongBook } from '../store.js'
+import { store, record, toggleStar, isStarred, inWrongBook } from '../store.js'
 
 const route = useRoute()
 const router = useRouter()
