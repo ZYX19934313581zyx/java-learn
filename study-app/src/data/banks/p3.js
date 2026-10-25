@@ -1,0 +1,83 @@
+// 阶段3 · Web基础 题库
+export default [
+  // ===== p3-k1 HTTP协议 =====
+  { id: 'p3-001', pid: 'p3', kp: 'p3-k1', t: 'single', q: 'GET 和 POST 最本质的区别?', opts: ['语义:GET取资源且参数在URL,POST提交数据在请求体', 'GET加密POST不加密', 'POST一定比GET快', 'GET不能带参数'],
+    a: 0,
+    exp: '两者都明文(HTTP下),安全靠HTTPS。GET 有长度限制且幂等,POST 不幂等(每次可能产生新副作用)。' },
+  { id: 'p3-002', pid: 'p3', kp: 'p3-k1', t: 'single', q: '登录没带Token,后端应返回哪个状态码?', opts: ['401 Unauthorized', '403 Forbidden', '404', '500'],
+    a: 0,
+    exp: '401=没登录/凭证无效;403=登录了但没权限。这俩的区别是高频面试题。' },
+  { id: 'p3-003', pid: 'p3', kp: 'p3-k1', t: 'single', q: '400 与 500 的区别?', opts: ['400=客户端参数错误,500=服务器内部异常', '都是服务器错', '400是服务器错', '500是前端错'],
+    a: 0,
+    exp: '4xx 你的锅(参数格式不对),5xx 我的锅(后端抛异常)。联调时先看谁的责任再吵架。' },
+  { id: 'p3-004', pid: 'p3', kp: 'p3-k1', t: 'single', q: '幂等性的含义是?', opts: ['同一请求执行一次和执行多次,效果相同', '请求必须带幂', '加密传输', '接口必须POST'],
+    a: 0,
+    exp: 'GET/PUT/DELETE 幂等,POST 不幂等。支付接口防重复下单就是靠幂等设计(幂等Token)。' },
+  { id: 'p3-005', pid: 'p3', kp: 'p3-k1', t: 'judge', q: '301/302 表示资源被重定向到新地址。', opts: ['正确', '错误'], a: 0,
+    exp: '301永久(搜索引擎更新地址),302临时。浏览器会自动跟跳。' },
+  { id: 'p3-006', pid: 'p3', kp: 'p3-k1', t: 'single', q: 'HTTPS 在 HTTP 基础上增加了什么?', opts: ['TLS加密+证书认证,防窃听防篡改', '更快的速度', '更多的方法', '内网穿透'],
+    a: 0,
+    exp: 'HTTP 明文裸奔;HTTPS 非对称交换密钥+对称加密数据+证书验身份。生产接口必须上。' },
+  { id: 'p3-007', pid: 'p3', kp: 'p3-k1', t: 'single', q: 'Content-Type: application/json 表示?', opts: ['请求体/响应体是JSON格式', '页面是中文', '图片格式', '压缩传输'],
+    a: 0,
+    exp: '后端靠它决定怎么解析请求体。POST JSON 不写对它,Spring 的 @RequestBody 直接报415。' },
+
+  // ===== p3-k2 F12 =====
+  { id: 'p3-010', pid: 'p3', kp: 'p3-k2', t: 'single', q: '联调时接口"没反应",F12 Network 里第一个该看的字段?', opts: ['Status(状态码)和请求是否真的发出去了', '页面的字体', '电脑内存', 'HTML颜色'],
+    a: 0,
+    exp: '排查链:请求发了没→状态码→Payload参数对不对→Response返回了什么。四步解决90%联调问题。' },
+  { id: 'p3-011', pid: 'p3', kp: 'p3-k2', t: 'judge', q: 'Network 面板的 Payload/请求体 能看到前端实际发送的参数。', opts: ['正确', '错误'], a: 0,
+    exp: '发没发对参数一眼便知。面试说"我会用F12定位前后端问题"是真本事不是装。' },
+
+  // ===== p3-k3 JSON =====
+  { id: 'p3-020', pid: 'p3', kp: 'p3-k3', t: 'single', q: 'JSON 的键必须用什么引号?', opts: ['双引号 "', '单引号', '反引号', '不用引号'],
+    a: 0,
+    exp: 'JSON 标准要求键双引号——JS 对象字面量可以单引号,但 JSON 不行,这是两者的区别之一。' },
+  { id: 'p3-021', pid: 'p3', kp: 'p3-k3', t: 'single', q: 'JSON 的值不能是哪一种?', opts: ['函数', '字符串', '数组', 'null'],
+    a: 0,
+    exp: '合法值:字符串/数字/布尔/null/对象/数组六种。函数、undefined、注释都不存在。' },
+  { id: 'p3-022', pid: 'p3', kp: 'p3-k3', t: 'judge', q: 'JSON 支持注释。', opts: ['错误', '正确'], a: 0,
+    exp: '严格JSON没有注释,所以配置文件常选YAML。axios 返回的对象也是解析好的JS对象不是JSON字符串。' },
+  { id: 'p3-023', pid: 'p3', kp: 'p3-k3', t: 'single',
+    q: '前端只认 JSON 不认识 Java 对象,后端返回对象时发生了什么?',
+    opts: ['Jackson 把对象序列化成JSON字符串,由Spring自动完成', '需要手动new String', '对象直接塞进HTTP', '前端自己反编译'],
+    a: 0,
+    exp: '@RestController 的 @ResponseBody 就是"返回值→Jackson→JSON字符串"。反过来 @RequestBody 是JSON→对象。' },
+
+  // ===== p3-k4 RESTful =====
+  { id: 'p3-030', pid: 'p3', kp: 'p3-k4', t: 'single', q: 'RESTful 风格下"修改1号用户"应该是?', opts: ['PUT /users/1', 'POST /updateUser?id=1', 'GET /users/1/update', 'PUT /users?id=1&action=update'],
+    a: 0,
+    exp: 'URL是名词表资源,方法表动作。/updateUser 这种动词URL是老派写法,看到就知道团队不REST。' },
+  { id: 'p3-031', pid: 'p3', kp: 'p3-k4', t: 'single', q: 'GET /users?page=2&size=10 中分页参数适合用什么接收?', opts: ['@RequestParam', '@RequestBody', '@PathVariable', '@Header'],
+    a: 0,
+    exp: '问号参数→@RequestParam;路径段→@PathVariable;JSON体→@RequestBody。三件套各管一摊。' },
+  { id: 'p3-032', pid: 'p3', kp: 'p3-k4', t: 'judge', q: 'RESTful 接口 URL 里应该用动词,如 /getUserById/1。', opts: ['错误', '正确'], a: 0,
+    exp: '资源用名词(/users/1),动作由 HTTP 方法表达。动词URL是反模式(内部复杂查询接口除外,那是另一套约定)。' },
+  { id: 'p3-033', pid: 'p3', kp: 'p3-k4', t: 'single', q: '统一返回 Result{code, message, data} 的好处?', opts: ['前端有一套固定判断逻辑,业务错误与HTTP状态码解耦', '性能更好', '省流量', '不加会报错'],
+    a: 0,
+    exp: 'HTTP 状态码表达"传输层"结果,Result.code 表达"业务层"结果(如1001用户名已存在)。两层各管各的。' },
+
+  // ===== p3-k5 Cookie/Session =====
+  { id: 'p3-040', pid: 'p3', kp: 'p3-k5', t: 'single', q: 'Cookie 和 Session 分别存在哪?', opts: ['Cookie在浏览器,Session在服务端', '都在服务端', '都在浏览器', 'Session在数据库'],
+    a: 0,
+    exp: '敏感数据别放Cookie(用户可看可改);Session安全但占服务端内存,集群要共享。' },
+  { id: 'p3-041', pid: 'p3', kp: 'p3-k5', t: 'single', q: '服务端怎么认出"这堆请求是同一个人"?靠Session机制时', opts: ['浏览器每次自动带Cookie里的JSESSIONID去匹配服务端Session', '靠IP', '靠用户名', '靠MAC地址'],
+    a: 0,
+    exp: '第一次访问,服务端发 Set-Cookie: JSESSIONID=xxx;之后浏览器每个请求自动带上,服务端据此找到会话。' },
+  { id: 'p3-042', pid: 'p3', kp: 'p3-k5', t: 'single', q: '前后端分离项目更流行 Token(JWT) 而不是 Session,主要因为?', opts: ['服务端不用存会话状态,天然支持集群与多端', 'JWT更安全永不泄露', 'Session被淘汰了', 'JWT不需要网络'],
+    a: 0,
+    exp: 'Session要粘在某一台服务器或共享存储;JWT自带身份信息+签名,任何实例都能验。代价:签发后不好主动作废。' },
+  { id: 'p3-043', pid: 'p3', kp: 'p3-k5', t: 'judge', q: 'Cookie 设置 HttpOnly 后,JavaScript 无法读取它,能防XSS偷Cookie。', opts: ['正确', '错误'], a: 0,
+    exp: 'HttpOnly 是Cookie的重要安全属性;同理 Secure 限定只在HTTPS传输。' },
+
+  // ===== p3-k6 全流程 =====
+  { id: 'p3-050', pid: 'p3', kp: 'p3-k6', t: 'single', q: 'DNS 的作用是?', opts: ['把域名解析成IP地址', '加密请求', '压缩页面', '存Session'],
+    a: 0,
+    exp: 'URL到页面第一站:先查本地缓存→hosts→DNS服务器,拿到IP才能建TCP连接。' },
+  { id: 'p3-051', pid: 'p3', kp: 'p3-k6', t: 'single', q: 'TCP 三次握手的目的是?', opts: ['确认双方收发能力正常,建立可靠连接', '加密数据', '解析域名', '登录认证'],
+    a: 0,
+    exp: '三次握手后才有可靠的字节流通道,HTTP请求才发得出去。HTTPS在此基础上还要TLS握手。' },
+  { id: 'p3-052', pid: 'p3', kp: 'p3-k6', t: 'single', q: '浏览器收到HTML后的渲染顺序大致是?', opts: ['解析HTML建DOM→加载CSS建样式树→合并渲染树→执行JS→绘制', '先跑JS再解析HTML一定', '直接截图显示', '先建TCP再解析'],
+    a: 0,
+    exp: '知道"DOM树+样式树→渲染"这个大图即可,前端深究是前端的事,你要的是能讲清链路。' }
+]

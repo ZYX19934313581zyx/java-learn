@@ -1,0 +1,71 @@
+// 阶段5 · 吃透 smart-diagnose-web 题库
+export default [
+  // ===== p5-k1 架构与请求链路 =====
+  { id: 'p5-001', pid: 'p5', kp: 'p5-k1', t: 'single', q: '一次"用户提问→AI回答"的完整链路,顺序正确的是?', opts: ['前端axios→Controller→Service→调大模型API→结果回填→SSE/JSON返回→前端渲染', '前端直接调大模型→存库→返回', 'Controller直接写SQL再调AI', '前端→数据库→AI→前端'],
+    a: 0,
+    exp: '记住这条主线,画架构图、讲项目、排查问题全靠它。AI只是Service里的一个"特殊下游服务"。' },
+  { id: 'p5-002', pid: 'p5', kp: 'p5-k1', t: 'judge', q: '在 Controller 里直接写 JDBC 查询是合理的。', opts: ['错误', '正确'], a: 0,
+    exp: 'Controller只管协议层收发,数据访问归Mapper、业务归Service。层乱了,后面每个功能都乱。' },
+  { id: 'p5-003', pid: 'p5', kp: 'p5-k1', t: 'single', q: '打断点调试一次完整请求,最好的入口是?', opts: ['Controller 方法的第一行', 'main方法', '数据库驱动源码', '前端main.js'],
+    a: 0,
+    exp: '从入口顺着调用链F8步过/F7步入,看参数怎么变、谁调谁——读懂项目最快的一条路。' },
+  { id: 'p5-004', pid: 'p5', kp: 'p5-k1', t: 'single', q: '给项目加"对话历史保存到数据库"功能,动刀顺序应该是?', opts: ['建表SQL→Entity/Mapper→Service逻辑→Controller接口→前端页面', '先写前端页面', '先改大模型API', '先加Redis'],
+    a: 0,
+    exp: '自底向上走三层+前端,每一层都能独立验证——这也是你阶段5考核的实现路径。' },
+
+  // ===== p5-k2 JWT登录 =====
+  { id: 'p5-010', pid: 'p5', kp: 'p5-k2', t: 'single', q: 'JWT 的三段结构是?', opts: ['Header(算法).Payload(载荷).Signature(签名),用点连接的Base64', '用户名.密码.验证码', 'IP.端口.协议', 'Token.Session.Cookie'],
+    a: 0,
+    exp: '前两段只是Base64编码"可读不可改",签名才防篡改。三段拼出来就是 eyJ...eyJ... 的样子。' },
+  { id: 'p5-011', pid: 'p5', kp: 'p5-k2', t: 'judge', q: 'JWT 的 Payload 是加密的,可以放心放密码和身份证号。', opts: ['错误', '正确'], a: 0,
+    exp: 'Payload只是Base64,谁都能解开看!只放 userId/过期时间这类非敏感声明。密码这种东西永远不该出现在JWT里。' },
+  { id: 'p5-012', pid: 'p5', kp: 'p5-k2', t: 'single', q: '服务端怎么确认 JWT 没被篡改?', opts: ['用密钥重新计算签名,与Token携带的签名比对', '查数据库比对用户', '看Token长度', '问大模型'],
+    a: 0,
+    exp: '签名=对Header.Payload做HMAC(密钥)。改一个字符,签名对不上,拦截器直接401。' },
+  { id: 'p5-013', pid: 'p5', kp: 'p5-k2', t: 'single', q: '前端拿到 JWT 后一般存哪、怎么带?', opts: ['localStorage/内存,请求头 Authorization: Bearer xxx', '存在URL参数里', '写在Cookie里自动带(也行但要防CSRF/XSS)', '放在User-Agent'],
+    a: 0,
+    exp: '主流是请求头携带+axios拦截器统一加。存localStorage有XSS风险,存Cookie要HttpOnly,各有利弊,面试能说出取舍就加分。' },
+  { id: 'p5-014', pid: 'p5', kp: 'p5-k2', t: 'single', q: 'JWT 的主要缺点是?', opts: ['签发后无法主动作废(只能等过期或维护黑名单)', '太长没法传输', '必须配合HTTPS不然报错', '不支持多端登录'],
+    a: 0,
+    exp: '"踢人下线/改密码后旧token失效"要额外做黑名单(Redis),这正是Session的天然优势——取舍题。' },
+  { id: 'p5-015', pid: 'p5', kp: 'p5-k2', t: 'single', q: '后端校验JWT的拦截器,验证失败应该返回?', opts: ['401,前端拦截器统一跳登录页', '500', '302重定向到百度', '返回空数组'],
+    a: 0,
+    exp: '401语义就是"未认证"。前后端约定好401的处理动作,联调才不互相甩锅。' },
+
+  // ===== p5-k3 Vue读改 =====
+  { id: 'p5-020', pid: 'p5', kp: 'p5-k3', t: 'single', q: '一个 .vue 单文件组件由哪三部分组成?', opts: ['template(模板) + script(逻辑) + style(样式)', 'HTML+CSS+SQL', 'Controller+Service+Mapper', 'head+body+footer'],
+    a: 0,
+    exp: '和Java一个文件一个类不同,Vue把"视图+逻辑+样式"包在一个组件里,组件是前端的最小复用单位。' },
+  { id: 'p5-021', pid: 'p5', kp: 'p5-k3', t: 'single', q: 'v-model 的作用是?', opts: ['表单元素与数据的双向绑定,输入变了数据变,数据变了输入变', '单向渲染', '循环列表', '条件显示'],
+    a: 0,
+    exp: 'v-model="keyword" 后,JS里keyword.value一变输入框跟着变,输入时keyword也同步。双向是表单场景的糖。' },
+  { id: 'p5-022', pid: 'p5', kp: 'p5-k3', t: 'single', q: 'ref(0) 创建的响应式数据,在 script 里修改要用?', opts: ['count.value = 5', 'count = 5', 'setCount(5)', 'this.count = 5'],
+    a: 0,
+    exp: 'ref包一层,script里读写都要.value;模板里不用。setup语法糖的入门第一坑。' },
+  { id: 'p5-023', pid: 'p5', kp: 'p5-k3', t: 'judge', q: '前端改完代码不需要重启,Vite 会热更新(HMR)自动刷新页面。', opts: ['正确', '错误'], a: 0,
+    exp: 'Vite的看家本事:改模板/样式秒级热替换。后端Spring Boot也有devtools热重启。' },
+
+  // ===== p5-k4 AI接口与SSE =====
+  { id: 'p5-030', pid: 'p5', kp: 'p5-k4', t: 'single', q: '为什么不能让前端直接调用大模型API?', opts: ['API Key 会暴露在前端代码里被盗用,必须由自己的后端代理转发', '前端没有网络权限', '大模型不支持HTTP', '会触发跨域且无解'],
+    a: 0,
+    exp: 'Key一旦打包进前端=公开。标准架构:前端→自己的后端(持有Key)→大模型,顺便做鉴权、限流、计费、历史记录。' },
+  { id: 'p5-031', pid: 'p5', kp: 'p5-k4', t: 'single', q: 'SSE(Server-Sent Events)适合做什么?', opts: ['服务器向浏览器单向持续推送数据,如AI逐字流式输出', '双向聊天', '上传大文件', '视频会议'],
+    a: 0,
+    exp: 'SSE是基于HTTP的单向推送,比WebSocket简单;AI回答一个token一个token推给前端,就是"打字机效果"。双向需求(聊天室)才用WebSocket。' },
+  { id: 'p5-032', pid: 'p5', kp: 'p5-k4', t: 'single', q: '大模型 API 的 messages 数组里,role=system 的作用是?', opts: ['设定AI的人设与行为规则,如"你是严谨的Java助教,只答技术问题"', '标记用户身份', '计费单位', '存储历史'],
+    a: 0,
+    exp: 'system(指令/人设)+user(用户输入)+assistant(AI历史回复)轮转,构成一次对话的完整上下文。' },
+  { id: 'p5-033', pid: 'p5', kp: 'p5-k4', t: 'judge', q: '把对话历史(messages)一起发给大模型,是实现"多轮对话/记住上文"的方式。', opts: ['正确', '错误'], a: 0,
+    exp: '模型本身无状态,所谓"记住"就是每次把相关历史带上(超长要截断或摘要——上下文窗口有限)。' },
+
+  // ===== p5-k5 面试表达 =====
+  { id: 'p5-040', pid: 'p5', kp: 'p5-k5', t: 'single', q: '面试官问"这个项目你做了什么",最好的回答结构是?', opts: ['STAR:背景问题→你的任务/职责→技术方案与难点→结果(可量化)', '把README背一遍', '从第一行代码讲到最后', '说主要是AI写的'],
+    a: 0,
+    exp: 'STAR让回答有骨架:30秒内讲清"为什么做→我做了什么→难在哪→效果如何",细节等追问再展开。' },
+  { id: 'p5-041', pid: 'p5', kp: 'p5-k5', t: 'single', q: '"如果重做这个项目,你会改进什么"这类问题,推荐准备什么答案?', opts: ['真实的权衡思考,如:接RAG减少幻觉、加Redis缓存历史、补自动化测试', '说没有要改进的', '说重写整个项目', '反问面试官'],
+    a: 0,
+    exp: '这题考的是思考深度不是标准答案。从自己项目里长出来的改进点(哪怕没实现)最可信。' },
+  { id: 'p5-042', pid: 'p5', kp: 'p5-k5', t: 'single', q: '面试被问到不会的技术点,正确姿势?', opts: ['诚实说没接触过,讲清相关已知部分+学习方法', '现场瞎编', '沉默', '反问面试官工资'],
+    a: 0,
+    exp: '面试也在测你的诚实度和思考路径。编造被识破=一票否决,诚实+展示推理=及格线以上。' }
+]
