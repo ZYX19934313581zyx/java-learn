@@ -1,11 +1,14 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 
 export default defineConfig({
   base: './',
   plugins: [
     vue(),
+    // 单文件产物：dist/index.html 双击（file://）可直接打开，模块脚本不会被浏览器拦
+    viteSingleFile(),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {

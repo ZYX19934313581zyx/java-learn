@@ -2,7 +2,7 @@ import { reactive, watch } from 'vue'
 
 const KEY = 'shangan_v1'
 function blank(){
-  return { answers: {}, starred: [], gates: {}, logs: [], override: null }
+  return { answers: {}, starred: [], gates: {}, logs: [], override: null, practicePos: {} }
 }
 function load(){
   try{
